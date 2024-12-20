@@ -2,6 +2,10 @@ import { RANKS }  from './enums/playingcard/RANKS.js'
 import { SUITS } from './enums/playingcard/SUITS.js';
 import { getValueByName, VALUES } from './enums/playingcard/VALUES.js';
 
+/**
+ * Represents a playing card with a rank, suit, and value.
+ * The card can be shown or hidden.
+ */
 class PlayingCard {
   #rank: RANKS
   #suit: SUITS
@@ -27,7 +31,12 @@ class PlayingCard {
     this.#value = getValueByName(this.#rank)
   }
 
-  get rank():RANKS {
+  /**
+   * Returns the cards rank if the card is not hidden. 
+   *
+   * @returns The cards rank.
+   */
+  get rank(): RANKS {
     if (!this.#isHidden) {
       return undefined
     }
@@ -35,6 +44,11 @@ class PlayingCard {
     return this.#rank
   }
 
+    /**
+   * Returns the cards suit if the card is not hidden. 
+   *
+   * @returns The cards suit.
+   */
   get suit(): SUITS {
     if (!this.#isHidden) {
       return undefined
@@ -43,6 +57,11 @@ class PlayingCard {
     return this.#suit
   }
 
+  /**
+   * Returns the cards value if the card is not hidden. 
+   *
+   * @returns The cards value.
+   */
   valueOf(): VALUES {
     if (!this.#isHidden) {
       return undefined
@@ -51,6 +70,9 @@ class PlayingCard {
     return this.#value
   }
 
+  /**
+   * Sets the option if the card is hidden or not.
+   */
   show(status: boolean) {
     this.#isHidden = status
   }
