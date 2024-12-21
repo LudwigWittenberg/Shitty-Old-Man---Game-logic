@@ -61,19 +61,11 @@ describe('Player under Tets', () => {
       
       const hand = sut.getHand()
 
-      for (const c of hand) {
-        console.log(c.rank, c.suit)
-      }
-
       const card = hand[0]
 
       sut.removeFromHand(card)
 
       const actual = sut.getHand()
-
-      for (const c of actual) {
-        console.log(c.rank, c.suit)
-      }
 
       expect(actual.length).toBe(2)
       expect(actual.some(c => c.rank === c1.rank && c.suit === c1.suit)).toBe(false);
@@ -82,79 +74,143 @@ describe('Player under Tets', () => {
     })
   })
 
-  describe('Table Cards Management', () => {
-    test('should add a card to the first available spot on the table', () => {
-      const card1 = new PlayingCard(RANKS.ACE, SUITS.HEARTS)
-      const card2 = new PlayingCard(RANKS.KING, SUITS.CLUBS)
+  describe('Tablecards under test initialize', () => {
+   test('Set the table settings One Layer', () => {
+      const settings = [
+        [false, false, false],
+        [false, false, false]
+      ]
 
-      sut.addTableCards(card1)
-      sut.addTableCards(card2)
+      sut.setStartTableSettings(settings)
+      const actual = sut.getTableSettings()
 
-      const tableCards = sut.getTableCards()
-
-      expect(tableCards[0][0]).toEqual(card1)
-      expect(tableCards[0][1]).toEqual(card2)
+      expect(actual).toEqual(settings)
     })
 
-    test('should not add a card if the table is full', () => {
-      const cards = [
-          new PlayingCard(RANKS.ACE, SUITS.HEARTS),
-          new PlayingCard(RANKS.KING, SUITS.SPADES),
-          new PlayingCard(RANKS.QUEEN, SUITS.DIAMONDS),
-          new PlayingCard(RANKS.KNIGHT, SUITS.CLUBS),
-          new PlayingCard(RANKS.TEN, SUITS.HEARTS),
-          new PlayingCard(RANKS.NINE, SUITS.SPADES),
-      ];
+    test('When no cards is left in the hand the last layer will be set to true.', () => {
+      const settings = [
+        [false, false, false],
+        [false, false, false]
+      ]
 
-      cards.forEach(card => sut.addTableCards(card)) // Fill the table
+      sut.setStartTableSettings(settings)
 
-      const newCard = new PlayingCard(RANKS.EIGHT, SUITS.DIAMONDS)
-      sut.addTableCards(newCard)
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
 
-      const tableCards = sut.getTableCards()
+      sut.addToHand(new PlayingCard(RANKS.QUEEN, SUITS.HEARTS ))
 
-      expect(tableCards.flat().includes(newCard)).toBe(false) // Ensure new card was not added
+      const hand = sut.getHand()
+
+      sut.removeFromHand(hand[0])
+
+      const actual = sut.getTableSettings()
+
+      const expected = [
+        [false, false, false],
+        [true, true, true]
+      ]
+
+      expect(actual).toEqual(expected)
     })
 
-    test('should remove a card from the table if available and from the hand if matched', () => {
-      const card1 = new PlayingCard(RANKS.ACE, SUITS.HEARTS)
-      const card2 = new PlayingCard(RANKS.KING, SUITS.CLUBS)
+    
+    test('Should not remove an unavilbe card', () => {
+      const settings = [
+        [false, false, false],
+        [false, false, false]
+      ]
 
-      sut.addTableCards(card1)
-      sut.addTableCards(card2)
+      sut.setStartTableSettings(settings)
 
-      sut.removeTableCard(card1)
-
-      const tableCards = sut.getTableCards()
-      expect(tableCards[0][0]).toBeNull() // Card removed from table
-    })
-
-    test('should not remove a card if it is not available', () => {
-      const card1 = new PlayingCard(RANKS.ACE, SUITS.HEARTS)
-      const card2 = new PlayingCard(RANKS.KING, SUITS.CLUBS)
-
-      sut.addTableCards(card1)
-      sut.addTableCards(card2)
-
-      const unavailableCard = new PlayingCard(RANKS.QUEEN, SUITS.DIAMONDS)
-      sut.removeTableCard(unavailableCard)
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
 
       const tableCards = sut.getTableCards()
-      expect(tableCards[0][0]).toEqual(card1)
-      expect(tableCards[0][1]).toEqual(card2)
+      
+      sut.removeFromTable(tableCards[0][0])
+
+      expect(tableCards[0][0]).toBeInstanceOf(PlayingCard)
+
+      let actual = 0
+      for (const layer of tableCards) {
+        for (const card of layer) {
+          expect(card).toBeInstanceOf(PlayingCard)
+          actual++
+        }
+      }
+  
+      expect(actual).toBe(6)
     })
 
-    test('should return the current table cards', () => {
-      const card1 = new PlayingCard(RANKS.ACE, SUITS.HEARTS)
-      const card2 = new PlayingCard(RANKS.KING, SUITS.CLUBS)
+    test('When no cards is left in layer one the bottom layer will be set to true.', () => {
+      const settings = [
+        [false, false, false],
+        [true, true, true]
+      ]
 
-        sut.addTableCards(card1)
-        sut.addTableCards(card2)
+      sut.setStartTableSettings(settings)
 
-        const tableCards = sut.getTableCards()
-        expect(tableCards[0][0]).toEqual(card1)
-        expect(tableCards[0][1]).toEqual(card2)
-        expect(tableCards[0][2]).toBeNull() // Empty slot
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+
+      const tableCards = sut.getTableCards()
+      sut.removeFromTable(tableCards[1][0])
+      sut.removeFromTable(tableCards[1][1])
+      sut.removeFromTable(tableCards[1][2])
+      const actual = sut.getTableSettings()
+
+      const expected = [
+        [true, true, true],
+        [true, true, true]
+      ]
+
+      expect(actual).toEqual(expected)
+    })
+  })
+
+  describe('Player table cards under test'.replace, () => {
+    beforeEach(() => {
+      const settings = [
+        [false, false, false],
+        [false, false, false]
+      ]
+
+      sut.setStartTableSettings(settings)
+    })
+
+    test('Should add cards the table (player)', () => {
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+      sut.addTableCard(deck.dealCard())
+  
+      const tableCards = sut.getTableCards()
+
+      let actual = 0
+
+      for (const layer of tableCards) {
+        for (const card of layer) {
+          expect(card).toBeInstanceOf(PlayingCard)
+          actual++
+        }
+      }
+  
+      expect(actual).toBe(6)
     })
   })
 })
