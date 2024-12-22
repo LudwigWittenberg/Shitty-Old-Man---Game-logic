@@ -1,12 +1,11 @@
 import { Deck } from "./Deck.js";
+import { RANKS } from "./enums/playingcard/RANKS.js";
+import { SUITS } from "./enums/playingcard/SUITS.js";
 import { Player } from "./Player.js";
+import { PlayingCard } from "./PlayingCard.js";
 
-const d = new Deck()
-
-d.shuffle()
-
+const deck = new Deck()
 const ludde = new Player('Ludde')
-const hampus = new Player('Hampus')
 
 const settings = [
   [false, false, false],
@@ -14,43 +13,36 @@ const settings = [
 ]
 
 ludde.setStartTableSettings(settings)
-hampus.setStartTableSettings(settings)
 
-for (let i = 0; i < 3; i++) {
-  const luddeCard = d.dealCard()
-  luddeCard.show(false)
-  ludde.addTableCard(luddeCard)
-  const hampusCard = d.dealCard()
-  hampusCard.show(false)
-  hampus.addTableCard(hampusCard)
-}
+ludde.addTableCard(deck.dealCard())
+ludde.addTableCard(deck.dealCard())
+ludde.addTableCard(deck.dealCard())
+ludde.addTableCard(deck.dealCard())
+ludde.addTableCard(deck.dealCard())
+ludde.addTableCard(deck.dealCard())
 
-for (let i = 0; i < 3; i++) {
-  const luddeCard = d.dealCard()
-  luddeCard.show(true)
-  ludde.addTableCard(luddeCard)
-  const hampusCard = d.dealCard()
-  hampusCard.show(true)
-  hampus.addTableCard(hampusCard)
-}
+const card = new PlayingCard(RANKS.TEN, SUITS.HEARTS)
+card.show(true)
+ludde.addToHand(card)
 
-const luddeCard = d.dealCard()
-luddeCard.show(true)
-ludde.addToHand(luddeCard)
-const hampusCard = d.dealCard()
-hampusCard.show(true)
-hampus.addToHand(hampusCard)
+const card2 = new PlayingCard(RANKS.ACE, SUITS.DIAMONDS)
+card2.show(true)
+ludde.addToHand(card2)
 
-console.log('Cards Left ' + d.cardsLeft)
-console.log('Ludde')
-for (const card of ludde.getHand()) {
-  console.log(card.rank, ' ', card.suit)
-}
-console.log(ludde.getTableCards())
+const luddesCards = ludde.getHand()
 
-console.log('Hampus')
-for (const card of hampus.getHand()) {
+for (const card of luddesCards) {
   console.log(card.rank, ' ', card.suit)
 }
 
-console.log(hampus.getTableCards())
+const cardToRemove = new PlayingCard(RANKS.FIVE, SUITS.CLUBS)
+
+console.log(cardToRemove)
+
+ludde.playCard(cardToRemove)
+
+const luddesCardsAfterPlayed = ludde.getHand()
+
+for (const card of luddesCardsAfterPlayed) {
+  console.log(card.rank, ' ', card.suit)
+}

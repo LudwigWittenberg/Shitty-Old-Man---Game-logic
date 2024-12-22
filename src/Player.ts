@@ -1,16 +1,49 @@
+import { CardObserver } from "./Observers/CardObserver.js"
+import { ListenNewCard } from "./Observers/ListenNewCard.js"
 import { PlayingCard } from "./PlayingCard.js"
 
-class Player {
+class Player implements CardObserver {
   #name: string
   #hand: PlayingCard[]
   #tableCards
   #tableCardsAvailble
+  subscribers: ListenNewCard[]
 
   constructor(name: string) {
     this.#setName(name)
     this.#hand = []
     this.#tableCards = []
     this.#tableCardsAvailble = []
+    this.subscribers = []
+  }
+
+  /**
+   * Adds an observer to the list of subscribers.
+   * 
+   * @param {ListenNewCard} observer - The observer to be added.
+   */
+  addObserver(observer: ListenNewCard) {
+    this.subscribers.push(observer)
+  }
+
+  /**
+   * Removes an observer from the list of subscribers.
+   * 
+   * @param {ListenNewCard} observer - The observer to be removed.
+   */
+  removeObserver(observer: ListenNewCard) {
+    this.subscribers = this.subscribers.filter(subscriber => subscriber !== observer);
+  }
+
+  /**
+   * Notifies all observers with the provided card.
+   * 
+   * @param {PlayingCard} card - The card to be sent to the observers.
+   */
+  notifyObservers(card: PlayingCard) {
+    for (const subscriber of this.subscribers) {
+      subscriber.update(this, card)
+    }
   }
 
   #setName(name: string) {
@@ -31,7 +64,7 @@ class Player {
    *
    * @returns {string} The name of the player.
    */
-  get name() {
+  get name(): string {
     return this.#name
   }
 
@@ -43,11 +76,25 @@ class Player {
   addToHand(card: PlayingCard) {
     this.#hand.push(card)
 
+    this.notifyObservers(card)
+
     this.#sortHand()
+
+    if (this.#hand.length === 1) {
+      this.#changeAvailability(false)
+    }
   }
 
   #sortHand() {
     this.#hand.sort((a, b) => a.valueOf() - b.valueOf())
+  }
+
+  playCard(card: PlayingCard) {
+    if (this.#hand.length === 0) {
+      this.#removeFromTable(card)
+    } else {
+      this.#removeFromHand(card)
+    }
   }
 
   /**
@@ -55,23 +102,36 @@ class Player {
    * 
    * @param {PlayingCard} card - The card to be removed. 
    */
-  removeFromHand(card: PlayingCard) {
-    const index = this.#hand.findIndex(cardOnHand => cardOnHand.suit === card.suit && cardOnHand.rank === card.rank)
-    if (index !== -1) {
-      this.#hand.splice(index, 1)
+  #removeFromHand(cardToRemove: PlayingCard) {
+    let cardFound = false
+
+    this.#hand = this.#hand.filter(card => {
+      const isMatch = card.rank === cardToRemove.rank && card.suit === cardToRemove.suit
+      if (isMatch) {
+        cardFound = true // Mark as found
+      }
+      return !isMatch // Keep cards that don't match
+    })
+
+    if (!cardFound) {
+      throw new Error("Card not found in hand")
     }
 
     this.#isHandEmpty()
   }
 
   #isHandEmpty() {
-    if (this.#hand.length === 0) {
+    const handLength = this.#hand.length
+
+    if (handLength === 0) {
       this.#changeAvailability(true)
     }
   }
 
   #changeAvailability(status: boolean) {
     const NUM_OF_CARDS = 3
+
+    // fix the index values.
     let LAST_LAYER = this.#tableCards.length - 1
     let layerToChange = this.#tableCards.length - 1
 
@@ -133,10 +193,12 @@ class Player {
     const NUM_OF_CARDS = 3
 
     // add a card to a specific place in the array.
+    // start from 0 0 to what ever the settings says.
     for (let i = 0; i < LAYERS; i++) {
       for (let index = 0; index < NUM_OF_CARDS; index++) {
         if (this.#tableCards[i][index] === null) {
           this.#tableCards[i][index] = card
+          this.notifyObservers(card)
           return
         }
       }
@@ -154,10 +216,11 @@ class Player {
 
   /**
    * Remove a specific card from the table. Only card that is availbe will be removed.
+   * replaced that spot with null to identifie that spot hase been removed.
    * 
    * @param card 
    */
-  removeFromTable(card: PlayingCard) {
+  #removeFromTable(card: PlayingCard) {
     for (let row = 0; row < this.#tableCards.length; row++) {
       for (let colIndex = 0; colIndex < this.#tableCards[row].length; colIndex++) {
         if (this.#tableCards[row][colIndex] === card) {
@@ -166,10 +229,14 @@ class Player {
           }
         }
       }
-  
-      if (this.#tableCards[row].every(card => card === null)) {
-        this.#changeAvailability(true)
-      }
+
+      this.#everyCardIsNull(row)
+    }
+  }
+
+  #everyCardIsNull(index: number) {
+    if (this.#tableCards[index].every(card => card === null)) {
+      this.#changeAvailability(true)
     }
   }
 }
