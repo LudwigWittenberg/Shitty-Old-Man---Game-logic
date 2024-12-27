@@ -97,12 +97,6 @@ describe('Player under Tets', () => {
 
       const cardToRemove = new PlayingCard(RANKS.FIVE, SUITS.CLUBS)
 
-      const luddesCards = sut.getHand()
-
-      for (const card of luddesCards) {
-        console.log(card.rank, ' ', card.suit)
-      }
-
       expect(() => {
         sut.playCard(cardToRemove)
       }).toThrow()

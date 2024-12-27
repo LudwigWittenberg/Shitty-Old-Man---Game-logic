@@ -38,7 +38,7 @@ class PlayingCard {
    */
   get rank(): RANKS {
     if (!this.#isHidden) {
-      return undefined
+      return undefined // need to change this
     }
 
     return this.#rank
@@ -51,7 +51,7 @@ class PlayingCard {
    */
   get suit(): SUITS {
     if (!this.#isHidden) {
-      return undefined
+      return undefined // need to change this
     }
 
     return this.#suit
@@ -64,7 +64,7 @@ class PlayingCard {
    */
   valueOf(): VALUES {
     if (!this.#isHidden) {
-      return undefined
+      return undefined // need to change this
     }
 
     return this.#value
