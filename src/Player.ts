@@ -86,7 +86,7 @@ class Player implements CardObserver {
   }
 
   #sortHand() {
-    this.#hand.sort((a, b) => a.valueOf() - b.valueOf())
+    this.#hand.sort((a, b) => Number(a.valueOf()) - Number(b.valueOf()))
   }
 
   playCard(card: PlayingCard) {

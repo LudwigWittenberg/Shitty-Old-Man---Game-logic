@@ -1,3 +1,4 @@
+import { HIDDEN } from './enums/playingcard/HIDDEN.js';
 import { RANKS }  from './enums/playingcard/RANKS.js'
 import { SUITS } from './enums/playingcard/SUITS.js';
 import { getValueByName, VALUES } from './enums/playingcard/VALUES.js';
@@ -36,9 +37,9 @@ class PlayingCard {
    *
    * @returns The cards rank.
    */
-  get rank(): RANKS {
+  get rank() {
     if (!this.#isHidden) {
-      return undefined // need to change this
+      return HIDDEN.HIDDEN
     }
 
     return this.#rank
@@ -49,9 +50,9 @@ class PlayingCard {
    *
    * @returns The cards suit.
    */
-  get suit(): SUITS {
+  get suit() {
     if (!this.#isHidden) {
-      return undefined // need to change this
+      return HIDDEN.HIDDEN
     }
 
     return this.#suit
@@ -62,9 +63,9 @@ class PlayingCard {
    *
    * @returns The cards value.
    */
-  valueOf(): VALUES {
+  valueOf() {
     if (!this.#isHidden) {
-      return undefined // need to change this
+      return HIDDEN.HIDDEN
     }
 
     return this.#value

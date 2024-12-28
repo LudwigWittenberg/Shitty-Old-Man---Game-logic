@@ -9,6 +9,11 @@ interface StartDeck {
    * @param {Player} players - All players that want to play. 
    */
   dealStartDeck(deck: Deck, players: Player[])
+
+  /**
+   * Returns the current table settings.
+   */
+  getSettings()
 }
 
 export { StartDeck }

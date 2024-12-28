@@ -2,6 +2,7 @@ import { RANKS } from '../src/enums/playingcard/RANKS'
 import { SUITS } from '../src/enums/playingcard/SUITS'
 import { PlayingCard } from '../src/PlayingCard'
 import { getValueByName, VALUES } from '../src/enums/playingcard/VALUES'
+import { HIDDEN } from '../src/enums/playingcard/HIDDEN'
 
 describe('Create all correct instances of the playing card.', () => {
   let cards: PlayingCard[]
@@ -97,8 +98,8 @@ describe('PlayingCard Class', () => {
   })
 
   test('should create a card with the correct rank and suit', () => {
-    expect(card.rank).toBeUndefined() // Initially hidden
-    expect(card.suit).toBeUndefined() // Initially hidden
+    expect(card.rank).toEqual(HIDDEN.HIDDEN) // Initially hidden
+    expect(card.suit).toEqual(HIDDEN.HIDDEN)// Initially hidden
     card.show(true)
     expect(card.rank).toBe(RANKS.ACE)
     expect(card.suit).toBe(SUITS.HEARTS)
@@ -110,9 +111,9 @@ describe('PlayingCard Class', () => {
   })
 
   test('should hide and show the card correctly', () => {
-    expect(card.rank).toBeUndefined()
-    expect(card.suit).toBeUndefined()
-    expect(card.valueOf()).toBeUndefined()
+    expect(card.rank).toEqual(HIDDEN.HIDDEN)
+    expect(card.suit).toEqual(HIDDEN.HIDDEN)
+    expect(card.valueOf()).toEqual(HIDDEN.HIDDEN)
 
     card.show(true)
     expect(card.rank).toBe(RANKS.ACE)
@@ -120,9 +121,9 @@ describe('PlayingCard Class', () => {
     expect(card.valueOf()).toBe(getValueByName(RANKS.ACE))
 
     card.show(false)
-    expect(card.rank).toBeUndefined()
-    expect(card.suit).toBeUndefined()
-    expect(card.valueOf()).toBeUndefined()
+    expect(card.rank).toEqual(HIDDEN.HIDDEN)
+    expect(card.suit).toEqual(HIDDEN.HIDDEN)
+    expect(card.valueOf()).toEqual(HIDDEN.HIDDEN)
   })
 
   test('should create all cards for a suit correctly', () => {

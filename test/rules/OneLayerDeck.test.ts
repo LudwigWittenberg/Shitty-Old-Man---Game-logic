@@ -1,4 +1,5 @@
 import { Deck } from '../../src/Deck'
+import { HIDDEN } from '../../src/enums/playingcard/HIDDEN'
 import { Player } from '../../src/Player'
 import { PlayingCard } from '../../src/PlayingCard'
 import { OneLayerDeck } from '../../src/rules/OneLayerDeck'
@@ -64,16 +65,16 @@ describe('OneLayerDeck under test', () => {
 
         for (const layer of tableCards) {
           for (const card of layer) {
-            if (card.rank && card.suit) {
+            if (card.rank !== HIDDEN.HIDDEN && card.suit !== HIDDEN.HIDDEN) {
               showCards++
               expect(card.rank).toBeDefined()
               expect(card.suit).toBeDefined()
               expect(card.valueOf()).toBeDefined()
             } else {
               hiddenCards++
-              expect(card.rank).toBeUndefined()
-              expect(card.suit).toBeUndefined()
-              expect(card.valueOf()).toBeUndefined()
+              expect(card.rank).toEqual(HIDDEN.HIDDEN)
+              expect(card.suit).toEqual(HIDDEN.HIDDEN)
+              expect(card.valueOf()).toEqual(HIDDEN.HIDDEN)
             }
           }
         }

@@ -14,6 +14,18 @@ class OneLayerDeck implements StartDeck{
   }
 
   /**
+   * Returns the current table settings.
+   *
+   * @returns The Table Layout.
+   */
+  getSettings() {
+    return [
+      [false, false, false],
+      [false, false, false]
+    ]
+  }
+
+  /**
    * Deals out the start cards for each new round.
    * 
    * @param {Deck} deck - The deck that have all cards 
