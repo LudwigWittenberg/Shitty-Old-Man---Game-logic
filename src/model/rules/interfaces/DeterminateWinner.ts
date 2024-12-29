@@ -6,7 +6,7 @@ interface DeterminateWinner {
    * 
    * @param {Player} players - All players in the game.
    */
-  checkWinner(players: Player[]): Player
+  checkWinner(players: Player): Player
 }
 
 export { DeterminateWinner }

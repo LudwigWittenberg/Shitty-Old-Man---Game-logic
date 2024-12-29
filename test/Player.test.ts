@@ -1,9 +1,9 @@
-import { Player } from '../src/Player'
-import { Deck } from '../src/Deck'
-import { PlayingCard } from '../src/PlayingCard'
-import { RANKS } from '../src/enums/playingcard/RANKS'
-import { SUITS } from '../src/enums/playingcard/SUITS'
-import { ListenNewCard } from '../src/Observers/ListenNewCard'
+import { Player } from '../src/model/Player'
+import { Deck } from '../src/model/Deck'
+import { PlayingCard } from '../src/model/PlayingCard'
+import { RANKS } from '../src/model/enums/playingcard/RANKS'
+import { SUITS } from '../src/model/enums/playingcard/SUITS'
+import { ListenNewCard } from '../src/model/Observers/ListenNewCard'
 
 describe('Player under Tets', () => {
   let sut: Player

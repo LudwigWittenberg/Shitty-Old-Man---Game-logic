@@ -1,5 +1,5 @@
 import { Player } from '../Player.js'
-import { PlayingCard } from '../PlayingCard.js'
+import { PlayingCard } from '..//PlayingCard.js'
 import { DeterminateWinner } from './interfaces/DeterminateWinner.js'
 
 /**
@@ -12,13 +12,11 @@ class GameWinner implements DeterminateWinner {
    * 
    * @param {Player} players - All players in the game.
    */
-  checkWinner(players: Player[]): Player {
+  checkWinner(player: Player): Player {
     let winner
-    for (const player of players) {
       if (this.#checkCards(player)) {
         winner = player
       }
-    }
 
     return winner
   }

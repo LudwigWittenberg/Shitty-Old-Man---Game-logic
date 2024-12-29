@@ -1,7 +1,7 @@
-import { GameWinner } from '../../src/rules/GameWinner'
-import { OneLayerDeck } from '../../src/rules/OneLayerDeck'
-import { OrginalGameRules } from '../../src/rules/OrginalGameRules'
-import { RulesFactory } from '../../src/rules/RulesFactory'
+import { GameWinner } from '../../src/model/rules/GameWinner'
+import { OneLayerDeck } from '../../src/model/rules/OneLayerDeck'
+import { OrginalGameRules } from '../../src/model/rules/OrginalGameRules'
+import { RulesFactory } from '../../src/model/rules/RulesFactory'
 
 describe('RuleFactory Under test', () => {
   let sut: RulesFactory

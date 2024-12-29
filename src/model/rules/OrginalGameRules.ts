@@ -1,5 +1,4 @@
 import { RANKS } from '../enums/playingcard/RANKS.js'
-import { SUITS } from '../enums/playingcard/SUITS.js'
 import { MOVE } from '../enums/Rules/MOVE.js'
 import { PlayingCard } from '../PlayingCard.js'
 import { Rules } from './interfaces/Rules.js'
@@ -29,6 +28,10 @@ class OrginalGameRules implements Rules {
       if(this.#isTEN(card)) {
         return MOVE.TURNS
       }
+
+      if (this.#isRankTwo(card)) {
+        return MOVE.VALID
+      }
   
       if (this.#isValidMove(lastCard, card)) {
         return MOVE.VALID
@@ -36,6 +39,10 @@ class OrginalGameRules implements Rules {
   
       return MOVE.PICK_UP
     }
+  }
+
+  #isRankTwo(card) {
+    return card.rank === RANKS.TWO
   }
 
   #isAllCardsSame(cardsToPlay: PlayingCard[]) {
@@ -47,6 +54,10 @@ class OrginalGameRules implements Rules {
   }
 
   #findLastCard(activePile: PlayingCard[]) {
+    if (activePile.length === 0) {
+      return null;
+    }
+
     const arrayLength = activePile.length - 1
 
     return activePile[arrayLength]
@@ -71,7 +82,16 @@ class OrginalGameRules implements Rules {
     }
   }
 
-  #isValidMove(lastCard: PlayingCard, card: PlayingCard) {
+  #isValidMove(lastCard: PlayingCard, card: PlayingCard): boolean {
+    if (lastCard === null) {
+      return true // If there is no last card, any move is valid
+    }
+
+    if (card.rank === RANKS.ACE) {
+      const aceValue = Number(card.valueOf()) + 13
+      return Number(lastCard.valueOf()) <= aceValue
+    }
+
     return lastCard.valueOf() <= card.valueOf()
   }
 

@@ -1,8 +1,8 @@
-import { Deck } from '../../src/Deck'
-import { HIDDEN } from '../../src/enums/playingcard/HIDDEN'
-import { Player } from '../../src/Player'
-import { PlayingCard } from '../../src/PlayingCard'
-import { OneLayerDeck } from '../../src/rules/OneLayerDeck'
+import { Deck } from '../../src/model/Deck'
+import { HIDDEN } from '../../src/model/enums/playingcard/HIDDEN'
+import { Player } from '../../src/model/Player'
+import { PlayingCard } from '../../src/model/PlayingCard'
+import { OneLayerDeck } from '../../src/model/rules/OneLayerDeck'
 
 describe('OneLayerDeck under test', () => {
   let sut: OneLayerDeck

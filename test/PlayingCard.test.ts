@@ -1,8 +1,8 @@
-import { RANKS } from '../src/enums/playingcard/RANKS'
-import { SUITS } from '../src/enums/playingcard/SUITS'
-import { PlayingCard } from '../src/PlayingCard'
-import { getValueByName, VALUES } from '../src/enums/playingcard/VALUES'
-import { HIDDEN } from '../src/enums/playingcard/HIDDEN'
+import { RANKS } from '../src/model/enums/playingcard/RANKS'
+import { SUITS } from '../src/model/enums/playingcard/SUITS'
+import { PlayingCard } from '../src/model/PlayingCard'
+import { getValueByName, VALUES } from '../src/model/enums/playingcard/VALUES'
+import { HIDDEN } from '../src/model/enums/playingcard/HIDDEN'
 
 describe('Create all correct instances of the playing card.', () => {
   let cards: PlayingCard[]

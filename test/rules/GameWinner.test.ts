@@ -1,8 +1,8 @@
-import { RANKS } from '../../src/enums/playingcard/RANKS'
-import { SUITS } from '../../src/enums/playingcard/SUITS'
-import { Player } from '../../src/Player'
-import { PlayingCard } from '../../src/PlayingCard'
-import { GameWinner } from '../../src/rules/GameWinner'
+import { RANKS } from '../../src/model/enums/playingcard/RANKS'
+import { SUITS } from '../../src/model/enums/playingcard/SUITS'
+import { Player } from '../../src/model/Player'
+import { PlayingCard } from '../../src/model/PlayingCard'
+import { GameWinner } from '../../src/model/rules/GameWinner'
 
 describe('GameWinner under Test', () => {
   let sut: GameWinner

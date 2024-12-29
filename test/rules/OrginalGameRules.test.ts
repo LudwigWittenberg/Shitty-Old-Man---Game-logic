@@ -1,9 +1,9 @@
-import { OrginalGameRules } from '../../src/rules/OrginalGameRules'
-import { Player } from '../../src/Player'
-import { PlayingCard } from '../../src/PlayingCard'
-import { RANKS } from '../../src/enums/playingcard/RANKS'
-import { SUITS } from '../../src/enums/playingcard/SUITS'
-import { MOVE } from '../../src/enums/Rules/MOVE'
+import { OrginalGameRules } from '../../src/model/rules/OrginalGameRules'
+import { Player } from '../../src/model/Player'
+import { PlayingCard } from '../../src/model/PlayingCard'
+import { RANKS } from '../../src/model/enums/playingcard/RANKS'
+import { SUITS } from '../../src/model/enums/playingcard/SUITS'
+import { MOVE } from '../../src/model/enums/Rules/MOVE'
 
 describe('OrginalGameRules under test', () => {
   let sut: OrginalGameRules

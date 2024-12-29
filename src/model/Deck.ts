@@ -1,6 +1,6 @@
 import { RANKS } from "./enums/playingcard/RANKS.js"
 import { SUITS } from "./enums/playingcard/SUITS.js"
-import { PlayingCard } from "./PlayingCard.js"
+import { PlayingCard } from './PlayingCard.js'
 
 /**
  * Represent the Deck class.

@@ -1,6 +1,6 @@
-import { HIDDEN } from '../src/enums/playingcard/HIDDEN'
-import { Game } from '../src/Game'
-import { Player } from '../src/Player'
+import { HIDDEN } from '../src/model/enums/playingcard/HIDDEN'
+import { Game } from '../src/model/Game'
+import { Player } from '../src/model/Player'
 
 describe('Game under test', () => {
   let sut: Game
@@ -85,5 +85,4 @@ describe('Game under test', () => {
       })
     })
   })
-
 })

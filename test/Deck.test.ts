@@ -1,5 +1,5 @@
-import { Deck } from '../src/Deck'
-import { PlayingCard } from '../src/PlayingCard'
+import { Deck } from '../src/model/Deck'
+import { PlayingCard } from '../src/model/PlayingCard'
 
 jest.mock('')
 
