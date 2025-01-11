@@ -1,5 +1,5 @@
 enum HIDDEN {
-  HIDDEN = 'HIDDEN'
+  HIDDEN = 'HIDDEN',
 }
 
 export { HIDDEN }

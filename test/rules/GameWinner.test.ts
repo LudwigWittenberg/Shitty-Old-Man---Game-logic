@@ -21,7 +21,7 @@ describe('GameWinner under Test', () => {
     for (const player of players) {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       player.setStartTableSettings(settings)
@@ -29,27 +29,51 @@ describe('GameWinner under Test', () => {
   })
 
   test('should return Player2 is winner. Player1 have crads left in hand', () => {
-    player1.addToHand(new PlayingCard(RANKS.ACE, SUITS.CLUBS))
+    addCardToHand(RANKS.ACE, SUITS.CLUBS, player1)
 
-    const actualWinner = sut.checkWinner(players)
+    const actualWinner = sut.checkWinner(player2)
 
     expect(actualWinner).toStrictEqual(player2)
   })
 
   test('should return Player1 is winner. Player2 have cards left on deck', () => {
-    player2.addTableCard(new PlayingCard(RANKS.ACE, SUITS.CLUBS))
+    addCardToHand(RANKS.ACE, SUITS.CLUBS, player2)
 
-    const actualWinner = sut.checkWinner(players)
+    const actualWinner = sut.checkWinner(player1)
 
     expect(actualWinner).toStrictEqual(player1)
   })
 
   test('should only return the winner else undefiend', () => {
-    player1.addToHand(new PlayingCard(RANKS.ACE, SUITS.CLUBS))
-    player2.addToHand(new PlayingCard(RANKS.ACE, SUITS.DIAMONDS))
+    addCardToHand(RANKS.ACE, SUITS.CLUBS, player1)
+    addCardToHand(RANKS.ACE, SUITS.DIAMONDS, player2)
 
-    const actualWinner = sut.checkWinner(players)
+    const actualWinner = sut.checkWinner(player1)
+
+    expect(actualWinner).toBeUndefined()
+  })
+
+  test('Player1 have table cards left', () => {
+    for (let i = 0; i < 5; i++) {
+      addCardToTable(RANKS.FIVE, SUITS.CLUBS, player1)
+    }
+
+    addCardToHand(RANKS.ACE, SUITS.DIAMONDS, player2)
+
+    const actualWinner = sut.checkWinner(player1)
 
     expect(actualWinner).toBeUndefined()
   })
 })
+
+function addCardToTable(rank, suit, player) {
+  const tableCard = new PlayingCard(rank, suit)
+  tableCard.show(true)
+  player.addTableCard(tableCard)
+}
+
+function addCardToHand(rank, suit, player) {
+  const handCard = new PlayingCard(rank, suit)
+  handCard.show(true)
+  player.addToHand(handCard)
+}

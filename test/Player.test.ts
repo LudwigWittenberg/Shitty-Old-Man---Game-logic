@@ -16,42 +16,36 @@ describe('Player under Tets', () => {
 
   describe('Test Player name', () => {
     test('New Player Correct Name', () => {
-      const player = new Player ('Player One')
+      const player = new Player('Player One')
       const actual = player.name
       const expected = 'Player One'
-  
+
       expect(actual).toBe(expected)
     })
-  
+
     test('New Player Not A Valid Name. To Throw', () => {
       expect(() => {
-        new Player ('Player@1')
+        new Player('Player@1')
       }).toThrow()
     })
-  
+
     test('New Player Valid Name. Not To Throw', () => {
       expect(() => {
-        new Player ('Player 1')
+        new Player('Player 1')
       }).not.toThrow()
     })
   })
 
   describe('addToHand under test', () => {
-
     beforeEach(() => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
+      addTableCards(sut, deck)
     })
 
     test('Should be able to add cards to the player hand', () => {
@@ -71,11 +65,11 @@ describe('Player under Tets', () => {
       c2.show(true)
       const c3 = new PlayingCard(RANKS.KING, SUITS.HEARTS)
       c3.show(true)
-      
+
       sut.addToHand(c1)
       sut.addToHand(c2)
       sut.addToHand(c3)
-      
+
       const hand = sut.getHand()
 
       const card = hand[2]
@@ -85,9 +79,15 @@ describe('Player under Tets', () => {
       const actual = sut.getHand()
 
       expect(actual.length).toBe(2)
-      expect(actual.some(c => c.rank === c1.rank && c.suit === c1.suit)).toBe(true)
-      expect(actual.some(c => c.rank === c2.rank && c.suit === c2.suit)).toBe(true)
-      expect(actual.some(c => c.rank === c3.rank && c.suit === c3.suit)).toBe(false)
+      expect(actual.some((c) => c.rank === c1.rank && c.suit === c1.suit)).toBe(
+        true
+      )
+      expect(actual.some((c) => c.rank === c2.rank && c.suit === c2.suit)).toBe(
+        true
+      )
+      expect(actual.some((c) => c.rank === c3.rank && c.suit === c3.suit)).toBe(
+        false
+      )
     })
 
     test('should trow if the card is not found', () => {
@@ -104,10 +104,10 @@ describe('Player under Tets', () => {
   })
 
   describe('Tablecards under test initialize', () => {
-   test('Set the table settings One Layer', () => {
+    test('Set the table settings One Layer', () => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
@@ -119,19 +119,14 @@ describe('Player under Tets', () => {
     test('When no cards is left in the hand the last layer will be set to true.', () => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
+      addTableCards(sut, deck)
 
-      sut.addToHand(new PlayingCard(RANKS.QUEEN, SUITS.HEARTS ))
+      sut.addToHand(new PlayingCard(RANKS.QUEEN, SUITS.HEARTS))
 
       const hand = sut.getHand()
 
@@ -141,30 +136,24 @@ describe('Player under Tets', () => {
 
       const expected = [
         [false, false, false],
-        [true, true, true]
+        [true, true, true],
       ]
 
       expect(actual).toEqual(expected)
     })
 
-    
     test('Should not remove an unavilbe card', () => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
+      addTableCards(sut, deck)
 
       const tableCards = sut.getTableCards()
-      
+
       sut.playCard(tableCards[0][0])
 
       expect(tableCards[0][0]).toBeInstanceOf(PlayingCard)
@@ -176,24 +165,19 @@ describe('Player under Tets', () => {
           actual++
         }
       }
-  
+
       expect(actual).toBe(6)
     })
 
     test('When no cards is left in layer one the bottom layer will be set to true.', () => {
       const settings = [
         [false, false, false],
-        [true, true, true]
+        [true, true, true],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
+      addTableCards(sut, deck)
 
       const tableCards = sut.getTableCards()
       sut.playCard(tableCards[1][0])
@@ -203,7 +187,7 @@ describe('Player under Tets', () => {
 
       const expected = [
         [true, true, true],
-        [true, true, true]
+        [true, true, true],
       ]
 
       expect(actual).toEqual(expected)
@@ -212,17 +196,12 @@ describe('Player under Tets', () => {
     test('Should set table card unavilbe when cards get picked up to hand', () => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
+      addTableCards(sut, deck)
 
       const card = deck.dealCard()
       card.show(true)
@@ -235,7 +214,7 @@ describe('Player under Tets', () => {
 
       const expectedOne = [
         [false, false, false],
-        [true, true, true]
+        [true, true, true],
       ]
 
       expect(actualOne).toEqual(expectedOne)
@@ -249,7 +228,7 @@ describe('Player under Tets', () => {
 
       const expected = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       expect(actual).toEqual(expected)
@@ -260,20 +239,15 @@ describe('Player under Tets', () => {
     beforeEach(() => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
     })
 
     test('Should add cards the table (player)', () => {
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-      sut.addTableCard(deck.dealCard())
-  
+      addTableCards(sut, deck)
+
       const tableCards = sut.getTableCards()
 
       let actual = 0
@@ -284,35 +258,8 @@ describe('Player under Tets', () => {
           actual++
         }
       }
-  
+
       expect(actual).toBe(6)
-    })
-  })
-
-  describe('Multiple Cards', () => {
-    beforeEach(() => {
-      const settings = [
-        [false, false, false],
-        [false, false, false]
-      ]
-
-      sut.setStartTableSettings(settings)
-
-      sut.addTableCard(new PlayingCard(RANKS.FIVE, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.SEVEN, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.SIX, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.FOUR, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.EIGHT, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.TWO, SUITS.HEARTS))
-    })
-
-    test('Should be able to place multiple cards if they are the same rank.', () => {
-      sut.addToHand(new PlayingCard(RANKS.TWO, SUITS.DIAMONDS))
-
-      const cards = [
-        
-      ]
-      
     })
   })
 
@@ -322,17 +269,12 @@ describe('Player under Tets', () => {
     beforeEach(() => {
       const settings = [
         [false, false, false],
-        [false, false, false]
+        [false, false, false],
       ]
 
       sut.setStartTableSettings(settings)
 
-      sut.addTableCard(new PlayingCard(RANKS.FIVE, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.SEVEN, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.SIX, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.FOUR, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.EIGHT, SUITS.HEARTS))
-      sut.addTableCard(new PlayingCard(RANKS.TWO, SUITS.HEARTS))
+      addTableCards(sut, deck)
 
       const stub = new ViewStub()
 
@@ -347,10 +289,6 @@ describe('Player under Tets', () => {
       sut.addObserver(stub2)
 
       expect(sut.subscribers.length).toBe(2)
-    })
-
-    test('Add 2 Observer', () => {
-      expect(sut.subscribers.length).toBe(1)
     })
 
     test('Remove Observer', () => {
@@ -386,7 +324,16 @@ class ViewStub implements ListenNewCard {
   update(player, card) {
     return {
       player,
-      card
+      card,
     }
   }
+}
+
+function addTableCards(sut, deck) {
+  sut.addTableCard(deck.dealCard())
+  sut.addTableCard(deck.dealCard())
+  sut.addTableCard(deck.dealCard())
+  sut.addTableCard(deck.dealCard())
+  sut.addTableCard(deck.dealCard())
+  sut.addTableCard(deck.dealCard())
 }

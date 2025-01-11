@@ -29,7 +29,7 @@ describe('OneLayerDeck under test', () => {
       for (const player of players) {
         const settings = [
           [false, false, false],
-          [false, false, false]
+          [false, false, false],
         ]
 
         player.setStartTableSettings(settings)

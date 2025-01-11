@@ -30,7 +30,7 @@ describe('Create all correct instances of the playing card.', () => {
     for (const card of cards) {
       expect(card.suit).toEqual(suit)
     }
-    expect(cards.every(card => card.rank)).toBe(true)
+    expect(cards.every((card) => card.rank)).toBe(true)
     expect(cards.length).toBe(13)
   }
 
@@ -65,7 +65,7 @@ describe('Expect all cards to have correct values', () => {
       cards.push(card)
     }
 
-    for(let i:number = 0; i < cards.length; i++) {
+    for (let i: number = 0; i < cards.length; i++) {
       const card = cards[i]
       card.show(true)
       const expectedValue = getValueByName(card.rank!)
@@ -99,7 +99,7 @@ describe('PlayingCard Class', () => {
 
   test('should create a card with the correct rank and suit', () => {
     expect(card.rank).toEqual(HIDDEN.HIDDEN) // Initially hidden
-    expect(card.suit).toEqual(HIDDEN.HIDDEN)// Initially hidden
+    expect(card.suit).toEqual(HIDDEN.HIDDEN) // Initially hidden
     card.show(true)
     expect(card.rank).toBe(RANKS.ACE)
     expect(card.suit).toBe(SUITS.HEARTS)
@@ -134,7 +134,7 @@ describe('PlayingCard Class', () => {
       cards.push(card)
     }
 
-    expect(cards.length).toBe(13);
+    expect(cards.length).toBe(13)
     for (const card of cards) {
       expect(card.suit).toBe(SUITS.HEARTS)
       expect(card.valueOf()).toBe(getValueByName(card.rank!))

@@ -6,8 +6,8 @@ import { StartDeck } from './interfaces/StartDeck.js'
  * This will deal one layer start deck.
  * 3 hidden cards, 3 visible cards on the table. And 3 cards on the hand.
  */
-class OneLayerDeck implements StartDeck{
-  #amountOfCards 
+class OneLayerDeck implements StartDeck {
+  #amountOfCards
 
   constructor() {
     this.#amountOfCards = 3
@@ -21,15 +21,15 @@ class OneLayerDeck implements StartDeck{
   getSettings() {
     return [
       [false, false, false],
-      [false, false, false]
+      [false, false, false],
     ]
   }
 
   /**
    * Deals out the start cards for each new round.
-   * 
-   * @param {Deck} deck - The deck that have all cards 
-   * @param {Player} players - All players that want to play. 
+   *
+   * @param {Deck} deck - The deck that have all cards
+   * @param {Player} players - All players that want to play.
    */
   dealStartDeck(deck: Deck, players: Player[]) {
     this.#dealOneLayer(deck, players, false)
@@ -39,7 +39,7 @@ class OneLayerDeck implements StartDeck{
   }
 
   #dealOneLayer(deck: Deck, players: Player[], status: boolean) {
-    for (let i = 0; i < this.#amountOfCards; i++) { 
+    for (let i = 0; i < this.#amountOfCards; i++) {
       this.#dealCardToPlayerTable(deck, players, status)
     }
   }
@@ -53,7 +53,7 @@ class OneLayerDeck implements StartDeck{
   }
 
   #dealHandCards(deck: Deck, players: Player[], status: boolean) {
-    for (let i = 0; i < this.#amountOfCards; i++) { 
+    for (let i = 0; i < this.#amountOfCards; i++) {
       this.#dealToHand(deck, players, status)
     }
   }

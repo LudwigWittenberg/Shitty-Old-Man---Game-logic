@@ -7,25 +7,22 @@ import { DeterminateWinner } from './interfaces/DeterminateWinner.js'
  * If there is no winner the game continues.
  */
 class GameWinner implements DeterminateWinner {
-    /**
+  /**
    * Will determinate who the winner is.
-   * 
+   *
    * @param {Player} players - All players in the game.
    */
   checkWinner(player: Player): Player {
     let winner
-      if (this.#checkCards(player)) {
-        winner = player
-      }
+    if (this.#checkCards(player)) {
+      winner = player
+    }
 
     return winner
   }
 
   #checkCards(player: Player) {
-    if (
-      this.#handIsEmpty(player) &&
-      this.#tableCardsIsEmpty(player)  
-    ) {
+    if (this.#handIsEmpty(player) && this.#tableCardsIsEmpty(player)) {
       return true
     }
 
@@ -42,6 +39,7 @@ class GameWinner implements DeterminateWinner {
   #tableCardsIsEmpty(player: Player) {
     let cardsLeft = 6
     const EMPTY = 0
+
     const tableCards = player.getTableCards()
 
     for (const layer of tableCards) {
@@ -52,11 +50,7 @@ class GameWinner implements DeterminateWinner {
       }
     }
 
-    if (cardsLeft === EMPTY) {
-      return true
-    }
-
-    return false
+    return cardsLeft === EMPTY
   }
 
   #isNull(card: PlayingCard) {

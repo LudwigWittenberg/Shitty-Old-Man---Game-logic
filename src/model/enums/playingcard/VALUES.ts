@@ -11,9 +11,9 @@ export enum VALUES {
   KNIGHT = 11,
   QUEEN = 12,
   KING = 13,
-  ACE = 1
+  ACE = 1,
 }
 
 export function getValueByName(name: string): number | undefined {
-  return VALUES[name as keyof typeof VALUES];
+  return VALUES[name as keyof typeof VALUES]
 }

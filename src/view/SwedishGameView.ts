@@ -1,14 +1,24 @@
-import { ReadLineAdapter } from "../adapters/ReadLineAdapter.js";
-import { Player } from "../model/Player.js";
-import { GameView } from "./GameView.js";
+import { ReadLineAdapter } from '../adapters/ReadLineAdapter.js'
+import { ListenNewCard } from '../model/Observers/ListenNewCard.js'
+import { Player } from '../model/Player.js'
+import { PlayingCard } from '../model/PlayingCard.js'
+import { GameView } from './GameView.js'
 
-class SwedishGameView implements GameView {
+class SwedishGameView implements GameView, ListenNewCard {
   #rl: ReadLineAdapter
   constructor() {
     this.#rl = new ReadLineAdapter()
   }
+  
+  async update(player: Player, card: PlayingCard) {
+    console.clear()
+    console.log(`${player.name} got the card: ${card.rank} ${card.suit}`)
+    console.log()
 
-  async addPlayer(): Promise<String> {
+    await this.#rl.getUserInput('Press enter to continue...')
+  }
+
+  async addPlayer(): Promise<string> {
     console.clear()
     return await this.#rl.getUserInput('Enter your Name: ')
   }
@@ -17,52 +27,103 @@ class SwedishGameView implements GameView {
     this.#rl.exitGame()
   }
 
-  async chooseCardToPlay(player, cards, activeCard) {
-    console.clear()
-    if(activeCard) {
-      console.log(`Last Card: ${activeCard.rank} ${activeCard.suit}`)
-    } else {
-      console.log('There is no active card.')
-    }
-    console.log()
-    let index = 0
-    const cardThatCanBePlayed = []
-    console.log(player.name)
+  async chooseCardToPlay(player, cards, activeCard, cardsLeft) {
+    let menuLoop = true
 
-    console.log('Table Cards: ')
-    for (const layer of cards.table.cards) {
-      for (const card of layer) {
-        if (cards.hand.cards.length < 0) {
+    while (menuLoop) {
+      console.clear()
+      if (activeCard) {
+        console.log(`Last Card: ${activeCard.rank} ${activeCard.suit}`)
+      } else {
+        console.log('There is no active card.')
+      }
+      console.log()
+      let index = 0
+      const cardThatCanBePlayed = []
+      console.log(player.name)
+
+      console.log('Table Cards: ')
+      for (const layer of cards.table.cards) {
+        for (const card of layer) {
+          if (card !== null) {
+            if (cards.hand.cards.length <= 0) {
+              console.log(`  ${index} ${card.rank} ${card.suit}`)
+              cardThatCanBePlayed.push(card)
+              index++
+            } else {
+              console.log(`    ${card.rank} ${card.suit}`)
+            }
+          }
+        }
+      }
+
+      if (cards.hand.cards.length > 0) {
+        console.log('Hand Cards: ')
+        for (const card of cards.hand.cards) {
           console.log(`${index} ${card.rank} ${card.suit}`)
           cardThatCanBePlayed.push(card)
           index++
-        } else {
-          console.log(`${card.rank} ${card.suit}`)
         }
       }
-    }
 
-    if (cards.hand.cards.length > 0) {
-      console.log('Hand Cards: ')
-      for (const card of cards.hand.cards) {
-        console.log(`${index} ${card.rank} ${card.suit}`)
-        cardThatCanBePlayed.push(card)
-        index++
+      console.log()
+      if (cardsLeft > 0) {
+        console.log('99. To Chance From Deck')
+        console.log()
+      }
+
+      const input = await this.#rl.getUserInput(
+        'Which card do you want to play? '
+      )
+
+      if (cardsLeft > 0) {
+        if (input === '99') {
+          return 'chanceFromDeck'
+        }
+      }
+
+      const card = cardThatCanBePlayed[input]
+
+      if (card) {
+        menuLoop = false
+
+        return card
       }
     }
-
-    const input = await this.#rl.getUserInput('Which card do you want to play?')
-
-    const card = cardThatCanBePlayed[input]
-
-    return card
   }
 
-  showWinner(player: Player) {
+  async showWinner(player: Player) {
     console.clear()
     console.log(`${player.name} is the winner of this game!!!`)
+
+    await this.#rl.getUserInput('Press enter to continue.')
   }
 
+  async menu() {
+    console.clear()
+
+    console.log('1. Add Player')
+    console.log('2. Start Shitty Old Man')
+    console.log('0. Quit game!')
+
+    const input = this.#rl.getUserInput('Enter a choice: ')
+
+    return input
+  }
+
+  async askAllCardsOfSameRank() {
+    const respone = await this.#rl.getUserInput(
+      'Do you want to play all cards of the same rank? y/n: '
+    )
+
+    if (respone === 'y' || respone === 'Y') {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  // add a method that will listen to alla cards beeing added to a player. so the view can show that card
 }
 
 export { SwedishGameView }

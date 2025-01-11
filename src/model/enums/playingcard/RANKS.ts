@@ -11,5 +11,5 @@ export enum RANKS {
   KNIGHT = 'KNIGHT',
   QUEEN = 'QUEEN',
   KING = 'KING',
-  ACE = 'ACE'
+  ACE = 'ACE',
 }

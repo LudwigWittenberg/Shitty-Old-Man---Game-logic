@@ -1,5 +1,5 @@
-import { PlayingCard } from "../PlayingCard.js"
-import { ListenNewCard } from "./ListenNewCard.js"
+import { PlayingCard } from '../PlayingCard.js'
+import { ListenNewCard } from './ListenNewCard.js'
 
 interface CardObserver {
   subscribers: ListenNewCard[]

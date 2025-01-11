@@ -1,6 +1,6 @@
-import { CardObserver } from "./Observers/CardObserver.js"
-import { ListenNewCard } from "./Observers/ListenNewCard.js"
-import { PlayingCard } from "./PlayingCard.js"
+import { CardObserver } from './Observers/CardObserver.js'
+import { ListenNewCard } from './Observers/ListenNewCard.js'
+import { PlayingCard } from './PlayingCard.js'
 
 class Player implements CardObserver {
   #name: string
@@ -19,7 +19,7 @@ class Player implements CardObserver {
 
   /**
    * Adds an observer to the list of subscribers.
-   * 
+   *
    * @param {ListenNewCard} observer - The observer to be added.
    */
   addObserver(observer: ListenNewCard) {
@@ -28,16 +28,18 @@ class Player implements CardObserver {
 
   /**
    * Removes an observer from the list of subscribers.
-   * 
+   *
    * @param {ListenNewCard} observer - The observer to be removed.
    */
   removeObserver(observer: ListenNewCard) {
-    this.subscribers = this.subscribers.filter(subscriber => subscriber !== observer);
+    this.subscribers = this.subscribers.filter(
+      (subscriber) => subscriber !== observer
+    )
   }
 
   /**
    * Notifies all observers with the provided card.
-   * 
+   *
    * @param {PlayingCard} card - The card to be sent to the observers.
    */
   notifyObservers(card: PlayingCard) {
@@ -70,8 +72,8 @@ class Player implements CardObserver {
 
   /**
    * Will add a playingcard to the players hand.
-   * 
-   * @param {PlayingCard} card - A card that the player have. 
+   *
+   * @param {PlayingCard} card - A card that the player have.
    */
   addToHand(card: PlayingCard) {
     this.#hand.push(card)
@@ -99,14 +101,15 @@ class Player implements CardObserver {
 
   /**
    * Will remove a card from the hand.
-   * 
-   * @param {PlayingCard} card - The card to be removed. 
+   *
+   * @param {PlayingCard} card - The card to be removed.
    */
   #removeFromHand(cardToRemove: PlayingCard) {
     let cardFound = false
 
-    this.#hand = this.#hand.filter(card => {
+    this.#hand = this.#hand.filter((card) => {
       const isMatch = card.rank === cardToRemove.rank && card.suit === cardToRemove.suit
+      
       if (isMatch) {
         cardFound = true // Mark as found
       }
@@ -114,7 +117,7 @@ class Player implements CardObserver {
     })
 
     if (!cardFound) {
-      throw new Error("Card not found in hand")
+      throw new Error('Card not found in hand')
     }
 
     this.#isHandEmpty()
@@ -136,7 +139,7 @@ class Player implements CardObserver {
     let layerToChange = this.#tableCards.length - 1
 
     // check if the top layer have cards or not.
-    if (this.#tableCards[LAST_LAYER].every(card => card === null)) {
+    if (this.#tableCards[LAST_LAYER].every((card) => card === null)) {
       layerToChange -= 1
     }
 
@@ -150,7 +153,7 @@ class Player implements CardObserver {
 
   /**
    * Returns tha players current hand.
-   * 
+   *
    * @returns {PlayingCard[]} - The players hand.
    */
   getHand() {
@@ -176,7 +179,7 @@ class Player implements CardObserver {
 
   /**
    * Returns the card availability.
-   * 
+   *
    * @returns {boolean} The availability for each card
    */
   getTableSettings() {
@@ -185,7 +188,7 @@ class Player implements CardObserver {
 
   /**
    * Add new card to the players table.
-   * 
+   *
    * @param {PlayingCard} card The card to be placed at the table.
    */
   addTableCard(card: PlayingCard) {
@@ -207,7 +210,7 @@ class Player implements CardObserver {
 
   /**
    * Returns tha table cards that have been dealt in the begining.
-   * 
+   *
    * @returns {PlayingCard} - All the players table cards.
    */
   getTableCards() {
@@ -217,12 +220,16 @@ class Player implements CardObserver {
   /**
    * Remove a specific card from the table. Only card that is availbe will be removed.
    * replaced that spot with null to identifie that spot hase been removed.
-   * 
-   * @param card 
+   *
+   * @param card
    */
   #removeFromTable(card: PlayingCard) {
     for (let row = 0; row < this.#tableCards.length; row++) {
-      for (let colIndex = 0; colIndex < this.#tableCards[row].length; colIndex++) {
+      for (
+        let colIndex = 0;
+        colIndex < this.#tableCards[row].length;
+        colIndex++
+      ) {
         if (this.#tableCards[row][colIndex] === card) {
           if (this.#tableCardsAvailble[row][colIndex]) {
             this.#tableCards[row][colIndex] = null
@@ -235,7 +242,7 @@ class Player implements CardObserver {
   }
 
   #everyCardIsNull(index: number) {
-    if (this.#tableCards[index].every(card => card === null)) {
+    if (this.#tableCards[index].every((card) => card === null)) {
       this.#changeAvailability(true)
     }
   }

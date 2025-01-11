@@ -1,5 +1,5 @@
-import { RANKS } from "./enums/playingcard/RANKS.js"
-import { SUITS } from "./enums/playingcard/SUITS.js"
+import { RANKS } from './enums/playingcard/RANKS.js'
+import { SUITS } from './enums/playingcard/SUITS.js'
 import { PlayingCard } from './PlayingCard.js'
 
 /**
@@ -28,7 +28,7 @@ class Deck {
 
   /**
    * Will deal the last card in the deck.
-   * 
+   *
    * @returns {PlayingCard} - The last card in the array.
    */
   dealCard(): PlayingCard {
@@ -38,7 +38,7 @@ class Deck {
       return this.#cards.pop()
     }
   }
- 
+
   /**
    * Will return the amount of cards left in the deck.
    *
@@ -54,14 +54,16 @@ class Deck {
   shuffle() {
     for (let i = this.#cards.length - 1; i > 0; i--) {
       const randomIndex = Math.floor(Math.random() * (i + 1))
-      ;[this.#cards[i], this.#cards[randomIndex]] = [this.#cards[randomIndex], this.#cards[i]]
+      ;[this.#cards[i], this.#cards[randomIndex]] = [
+        this.#cards[randomIndex],
+        this.#cards[i],
+      ]
     }
-
   }
 
   /**
    * Adds a card to the deck.
-   * 
+   *
    * @param {PlayingCard} card - The card to be added.
    */
   add(card: PlayingCard) {

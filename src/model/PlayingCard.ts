@@ -1,7 +1,7 @@
-import { HIDDEN } from './enums/playingcard/HIDDEN.js';
-import { RANKS }  from './enums/playingcard/RANKS.js'
-import { SUITS } from './enums/playingcard/SUITS.js';
-import { getValueByName, VALUES } from './enums/playingcard/VALUES.js';
+import { HIDDEN } from './enums/playingcard/HIDDEN.js'
+import { RANKS } from './enums/playingcard/RANKS.js'
+import { SUITS } from './enums/playingcard/SUITS.js'
+import { getValueByName, VALUES } from './enums/playingcard/VALUES.js'
 
 /**
  * Represents a playing card with a rank, suit, and value.
@@ -33,7 +33,7 @@ class PlayingCard {
   }
 
   /**
-   * Returns the cards rank if the card is not hidden. 
+   * Returns the cards rank if the card is not hidden.
    *
    * @returns The cards rank.
    */
@@ -45,8 +45,8 @@ class PlayingCard {
     return this.#rank
   }
 
-    /**
-   * Returns the cards suit if the card is not hidden. 
+  /**
+   * Returns the cards suit if the card is not hidden.
    *
    * @returns The cards suit.
    */
@@ -59,7 +59,7 @@ class PlayingCard {
   }
 
   /**
-   * Returns the cards value if the card is not hidden. 
+   * Returns the cards value if the card is not hidden.
    *
    * @returns The cards value.
    */

@@ -8,7 +8,7 @@ import { OrginalGameRules } from './OrginalGameRules.js'
 class RulesFactory {
   /**
    * Returns tha active start deck.
-   * 
+   *
    * @returns The start deck to use.
    */
   getStartDeck(): StartDeck {
@@ -17,7 +17,7 @@ class RulesFactory {
 
   /**
    * Returns the game rules to the game.
-   * 
+   *
    * @returns GameRules.
    */
   getGameRules(): Rules {
@@ -26,7 +26,7 @@ class RulesFactory {
 
   /**
    * Determitates how a player can win the game.
-   * 
+   *
    * @returns The game winner rules.
    */
   getWinnerRules(): DeterminateWinner {

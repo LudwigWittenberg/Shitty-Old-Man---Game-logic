@@ -1,9 +1,10 @@
-import { Deck } from "./Deck.js"
-import { MOVE } from "./enums/Rules/MOVE.js"
-import { Player } from "./Player.js"
-import { PlayingCard } from "./PlayingCard.js"
-import { RulesFactory } from "./rules/RulesFactory.js"
-
+import { GameView } from '../view/GameView.js'
+import { Deck } from './Deck.js'
+import { MOVE } from './enums/Rules/MOVE.js'
+import { ListenNewCard } from './Observers/ListenNewCard.js'
+import { Player } from './Player.js'
+import { PlayingCard } from './PlayingCard.js'
+import { RulesFactory } from './rules/RulesFactory.js'
 
 class Game {
   #players: Player[]
@@ -29,7 +30,12 @@ class Game {
     this.#deck.shuffle()
   }
 
+  /**
+   * Start the game. Will deal out cards to every player.
+   */
   startGame() {
+    this.#restartGame()
+
     this.#dealOutStartDeck()
   }
 
@@ -39,27 +45,29 @@ class Game {
     dealTableCards.dealStartDeck(this.#deck, this.#players)
   }
 
+  /**
+   * Play one round of the game with the current player.
+   *
+   * @param {Player} player - The current player whos turns it is to play.
+   * @param {PlayingCard} cardToPlay - The cards to be played by the player.
+   * @returns {MOVE} Return tha action of the move.
+   */
   playRound(player: Player, cardToPlay: PlayingCard[]) {
-    let validMove = false
     const gameRules = this.#rulesFactory.getGameRules()
 
-    const action = gameRules.rules(this.#activePile, cardToPlay)
-
-    console.log('ACTION ', action)
+    const action = gameRules.rules(this.#activePile, cardToPlay, player)
 
     switch (action) {
       case MOVE.NOT_VALID:
-        validMove = false
         return MOVE.NOT_VALID
       case MOVE.PICK_UP:
+        this.#validPlayerMove(player, cardToPlay)
         this.#playerPickUpActivePile(player)
-        validMove = true
         this.#currentPlayer++
         return MOVE.PICK_UP
       case MOVE.TURNS:
         this.#validPlayerMove(player, cardToPlay)
         this.#resetActivePile()
-        this.#currentPlayer++
         return MOVE.TURNS
       case MOVE.VALID:
         this.#validPlayerMove(player, cardToPlay)
@@ -89,8 +97,8 @@ class Game {
       player.playCard(card)
       this.#activePile.push(card)
 
-      if (player.getHand().length < 3) {
-        if (this.#deck.cardsLeft !== 0) {
+      if (this.#isHandFull(player)) {
+        if (!this.#isDeckEmpty()) {
           const cardFromDeck = this.#deck.dealCard()
           cardFromDeck.show(true)
           player.addToHand(cardFromDeck)
@@ -99,6 +107,20 @@ class Game {
     }
   }
 
+  #isHandFull(player: Player) {
+    const FULL_HAND = 3
+    return player.getHand().length < FULL_HAND
+  }
+
+  #isDeckEmpty() {
+    return this.#deck.cardsLeft === 0
+  }
+
+  /**
+   * Add a Player to the game.
+   *
+   * @param {string} name - The name of the player.
+   */
   addPlayer(name: string) {
     const player = new Player(name)
 
@@ -115,25 +137,46 @@ class Game {
     return factory.getSettings()
   }
 
+  /**
+   * Get all players in the game.
+   *
+   * @returns {Player[]} Returns an array of every player in the current game.
+   */
   getPlayers() {
     return this.#players
   }
 
+  /**
+   * Remove a specific player from the game.
+   *
+   * @param {Player} player The player to remove from the game.
+   */
   removePlayer(player: Player) {
-    this.#players = this.#players.filter(p => p !== player)
+    this.#players = this.#players.filter((p) => p !== player)
   }
 
+  /**
+   * Returns all of the players hand and table cards.
+   *
+   * @param {Player} player - The player to get the cards from.
+   * @returns {object} All PlayingCards from a specific user.
+   */
   getPlayerAllCards(player: Player) {
     return {
       hand: {
-        cards: player.getHand()
+        cards: player.getHand(),
       },
       table: {
-        cards: player.getTableCards()
-      }
+        cards: player.getTableCards(),
+      },
     }
   }
 
+  /**
+   * Get the current player. When all players have played, its resets to the first player again.
+   *
+   * @returns {Player} The current players turn.
+   */
   getCurrentPlayer() {
     this.#isNewRound()
 
@@ -146,20 +189,66 @@ class Game {
     }
   }
 
+  /**
+   * Will controll if we have a winner in the game.
+   *
+   * @param {Player} player - The player to chech if he is the winner of the game.
+   * @returns {Player || undefiend} - Will return the player if he won the game. Otherwise undefined.
+   */
   doWeHaveAWinner(player: Player) {
     const winnerRules = this.#rulesFactory.getWinnerRules()
 
     return winnerRules.checkWinner(player)
   }
 
+  /**
+   * Get the last card of the active pile.
+   *
+   * @returns {PlayingCard || null} Tha last placed card in the active pile.
+   * Null is when the active pile is empty.
+   */
   getLastCard() {
     if (this.#activePile.length === 0) {
-      return null;
+      return null
     }
 
     const arrayLength = this.#activePile.length - 1
 
     return this.#activePile[arrayLength]
+  }
+
+  /**
+   * The current player want to chance to draw a card from the deck.
+   *
+   * @param {Player} player - The player who wants to gamble.
+   * @returns {MOVE} - The validity of the move.
+   */
+  chanceFromDeck(player: Player) {
+    // I think I need to change this way so that the player can place multiple cards if he have more of the same rank.
+    const cardsToPlay = []
+
+    const chanceCard = this.#deck.dealCard()
+    chanceCard.show(true)
+    player.addToHand(chanceCard)
+    cardsToPlay.push(chanceCard)
+
+    return this.playRound(player, cardsToPlay)
+  }
+
+  cardsLeftInDeck():number {
+    return this.#deck.cardsLeft
+  }
+
+  #restartGame() {
+    for (const card of this.#activePile) {
+      this.#discardPile.push(card)
+    }
+
+    for (const card of this.#discardPile) {
+      this.#deck.add(card)
+    }
+
+    this.#deck.shuffle()
   }
 }
 

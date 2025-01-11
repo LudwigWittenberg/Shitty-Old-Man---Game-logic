@@ -5,9 +5,13 @@ interface GameView {
 
   exitGame()
 
-  chooseCardToPlay(player: Player, cards, activeCard)
+  chooseCardToPlay(player: Player, cards, activeCard, cardsLeft: number)
 
   showWinner(player: Player)
+
+  menu()
+
+  askAllCardsOfSameRank()
 }
 
 export { GameView }
