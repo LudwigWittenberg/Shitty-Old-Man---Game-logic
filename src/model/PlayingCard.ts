@@ -11,7 +11,7 @@ class PlayingCard {
   #rank: RANKS
   #suit: SUITS
   #value: VALUES
-  #isHidden: Boolean
+  #isHidden: boolean
 
   constructor(rank: RANKS, suit: SUITS) {
     this.#setRank(rank)

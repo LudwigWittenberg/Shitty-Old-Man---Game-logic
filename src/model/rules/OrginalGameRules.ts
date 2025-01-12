@@ -21,6 +21,7 @@ class OrginalGameRules implements Rules {
   ): MOVE {
     this.#changeAllToVisible(cardsToPlay)
 
+    // Look if the last card of the player is a not valid move.
     if (this.#isLastCard(player, cardsToPlay)) {
       for (const card of cardsToPlay) {
         if (this.#isAce(card) || this.#isTwo(card) || this.#isTEN(card)) {
@@ -39,6 +40,10 @@ class OrginalGameRules implements Rules {
       return MOVE.TURNS
     }
 
+    if (this.#sameCard(cardsToPlay, activePile)) {
+      return MOVE.TURNS
+    }
+
     for (const card of cardsToPlay) {
       if (this.#isTEN(card)) {
         return MOVE.TURNS
@@ -46,10 +51,6 @@ class OrginalGameRules implements Rules {
 
       if (this.#isTwo(card)) {
         return MOVE.VALID
-      }
-
-      if (this.#sameCard(lastCard, card, activePile)) {
-        return MOVE.TURNS
       }
 
       if (this.#isValidMove(lastCard, card)) {
@@ -97,22 +98,33 @@ class OrginalGameRules implements Rules {
     return result
   }
 
-  // Error in this method.
-  // We need to check if we place 3 cards we only need to check that last card in the pile.
-  // if we place 2 cards we only need to check the 2 last card in the pile.
-  // If we place 1 card we only need to check the 3 last cards in the pile.
-  #sameCard(
-    lastCard: PlayingCard,
-    card: PlayingCard,
-    activePile: PlayingCard[]
-  ) {
-    if (this.#isSameCard(lastCard, card)) {
+  #sameCard(cardsToPlay: PlayingCard[], activePile: PlayingCard[]) {
+    const lastCard = this.#findLastCard(activePile)
+    const firstCardToBePlayed = cardsToPlay[0]
+
+    if (this.#isSameCard(lastCard, firstCardToBePlayed)) {
       const seccondCard = this.#secondLastCard(activePile)
       const thiredCard = this.#thiredLastCard(activePile)
 
+      // Turns if we place 3 FOURS on 1 FOUR
+      if (this.#isAmountOfCardsPlaced(cardsToPlay, 3) && this.#isAllCardsSame(cardsToPlay)) {
+        return true
+      }
+
+      // Turns if we place 2 FOURS on 2 FOURS
       if (
-        this.#isSameCard(seccondCard, card) &&
-        this.#isSameCard(thiredCard, card)
+        this.#isAllCardsSame(cardsToPlay) &&
+        this.#isSameCard(seccondCard, firstCardToBePlayed) &&
+        this.#isAmountOfCardsPlaced(cardsToPlay, 2)
+      ) {
+        return true
+      }
+
+      // Turns if we place 1 Four on 3 Fours
+      if (
+        this.#isSameCard(seccondCard, firstCardToBePlayed) &&
+        this.#isSameCard(thiredCard, firstCardToBePlayed) &&
+        this.#isAmountOfCardsPlaced(cardsToPlay, 1)
       ) {
         return true
       }
@@ -121,12 +133,16 @@ class OrginalGameRules implements Rules {
     return false
   }
 
-  #isSameCard(lastCard: PlayingCard, card: PlayingCard) {
-    if (this.#isNull(lastCard)) {
+  #isAmountOfCardsPlaced(cardsToPlay: PlayingCard[], amount: number) {
+    return cardsToPlay.length === amount
+  }
+
+  #isSameCard(cardToCheck: PlayingCard, card: PlayingCard) {
+    if (this.#isNull(cardToCheck)) {
       return false
     }
 
-    return lastCard.rank === card.rank
+    return cardToCheck.rank === card.rank
   }
 
   #secondLastCard(activePile: PlayingCard[]) {

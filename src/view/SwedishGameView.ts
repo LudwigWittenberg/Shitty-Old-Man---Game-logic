@@ -1,21 +1,13 @@
 import { ReadLineAdapter } from '../adapters/ReadLineAdapter.js'
-import { ListenNewCard } from '../model/Observers/ListenNewCard.js'
+import { CHANCE } from '../enums/CHANCE.js'
+import { MENU } from '../enums/MENU.js'
 import { Player } from '../model/Player.js'
-import { PlayingCard } from '../model/PlayingCard.js'
 import { GameView } from './GameView.js'
 
-class SwedishGameView implements GameView, ListenNewCard {
+class SwedishGameView implements GameView {
   #rl: ReadLineAdapter
   constructor() {
     this.#rl = new ReadLineAdapter()
-  }
-  
-  async update(player: Player, card: PlayingCard) {
-    console.clear()
-    console.log(`${player.name} got the card: ${card.rank} ${card.suit}`)
-    console.log()
-
-    await this.#rl.getUserInput('Press enter to continue...')
   }
 
   async addPlayer(): Promise<string> {
@@ -31,7 +23,7 @@ class SwedishGameView implements GameView, ListenNewCard {
     let menuLoop = true
 
     while (menuLoop) {
-      console.clear()
+      // console.clear()
       if (activeCard) {
         console.log(`Last Card: ${activeCard.rank} ${activeCard.suit}`)
       } else {
@@ -78,7 +70,7 @@ class SwedishGameView implements GameView, ListenNewCard {
 
       if (cardsLeft > 0) {
         if (input === '99') {
-          return 'chanceFromDeck'
+          return CHANCE.CHANCE
         }
       }
 
@@ -106,9 +98,16 @@ class SwedishGameView implements GameView, ListenNewCard {
     console.log('2. Start Shitty Old Man')
     console.log('0. Quit game!')
 
-    const input = this.#rl.getUserInput('Enter a choice: ')
+    const input = await this.#rl.getUserInput('Enter a choice: ')
 
-    return input
+    switch (input) {
+      case '1':
+        return MENU.ADD_PLAYER
+      case '2':
+        return MENU.START
+      case '0':
+        return MENU.EXIT
+    }
   }
 
   async askAllCardsOfSameRank() {

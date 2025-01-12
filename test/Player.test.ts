@@ -154,7 +154,9 @@ describe('Player under Tets', () => {
 
       const tableCards = sut.getTableCards()
 
-      sut.playCard(tableCards[0][0])
+      expect(() => {
+        sut.playCard(tableCards[0][0])
+      }).toThrow()
 
       expect(tableCards[0][0]).toBeInstanceOf(PlayingCard)
 

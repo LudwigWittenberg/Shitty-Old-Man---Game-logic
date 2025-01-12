@@ -296,7 +296,7 @@ describe('OrginalGameRules under test', () => {
 
     test('Places 1 Fours and turns the activePile', () => {
       addToActivePile(RANKS.FOUR, SUITS.DIAMONDS, activePile)
-      addToActivePile(RANKS.FOUR, SUITS.CLUBS, player1)
+      addToActivePile(RANKS.FOUR, SUITS.CLUBS, activePile)
       
       addCardToHand(RANKS.FOUR, SUITS.SPADES, player1)
 

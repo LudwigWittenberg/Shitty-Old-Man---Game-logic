@@ -1,3 +1,5 @@
+import { CHANCE } from '../enums/CHANCE.js'
+import { MENU } from '../enums/MENU.js'
 import { Game } from '../model/Game.js'
 import { Player } from '../model/Player.js'
 import { PlayingCard } from '../model/PlayingCard.js'
@@ -23,13 +25,13 @@ class GameController {
       let menuChoice = await this.#view.menu()
 
       switch (menuChoice) {
-        case '1':
+        case MENU.ADD_PLAYER:
           await this.#addPlayers()
           break
-        case '2':
+        case MENU.START:
           await this.#start()
           break
-        case '0':
+        case MENU.EXIT:
           menuLoop = false
           await this.#view.exitGame()
           break
@@ -75,21 +77,22 @@ class GameController {
       const lastCard = this.#game.getLastCard()
       const cardsLeft = this.#game.cardsLeftInDeck()
 
-      const cardToPlay = await this.#view.chooseCardToPlay(
+      let cardToPlay = await this.#view.chooseCardToPlay(
         player,
         playerCards,
         lastCard,
         cardsLeft
       )
 
-      // A very bad way. But the controller and view in only for test purpose.
-      if (cardToPlay === 'chanceFromDeck') {
-        validMove = this.#game.chanceFromDeck(player)
-      } else {
-        const cards = await this.#placeAllCards(player, cardToPlay)
-
-        validMove = this.#game.playRound(player, cards)
+      if (cardToPlay === CHANCE.CHANCE) {
+        cardToPlay = this.#game.chanceFromDeck(player)
       }
+
+      const cards = await this.#placeAllCards(player, cardToPlay)
+
+      console.log(cardToPlay)
+
+      validMove = this.#game.playRound(player, cards)
     }
     // show cards
     return validMove
@@ -97,33 +100,60 @@ class GameController {
 
   async #placeAllCards(player, cardToPlay) {
     const playerHand = player.getHand()
+    let cardsToPlay = []
 
-    const cardsToPlay = await this.#selectMultipleCards(playerHand, cardToPlay)
+    if (playerHand.length > 0) {
+      cardsToPlay = await this.#selectMultipleCards(playerHand, cardToPlay)
+    }
 
-    // TODO: Trying to get so multiple cards can work from the table combined with the hand.
-    // if (this.#allCardsSame(playerHand, cardToPlay)) {
-    //   const tableCards = player.getTableCards()
-    //   const mathedTableCards = await this.#selectFromTable(tableCards[1], cardToPlay)
+    if (this.#allCardsSame(playerHand, cardToPlay) && playerHand.length > 0) {
+      const mathedTableCards = await this.#selectFromTable(player, cardToPlay)
 
-    //   for (const card of mathedTableCards) {
-    //     cardsToPlay.push(card)
-    //   }
-    // }
+      for (const card of mathedTableCards) {
+        cardsToPlay.push(card)
+      }
 
-    // add a check if the player have more cards on the table but only if the hand will be empty after the cards have been placed.
+      // cardsToPlay = [...new Set(cardsToPlay)]
+    }
+
+    // Look only on the table cards.
+    if (cardsToPlay.length === 0) {
+      cardsToPlay = await this.#selectFromTable(player, cardToPlay)
+    }
 
     return cardsToPlay
   }
 
   #allCardsSame(playerHand: PlayingCard[], cardToPlace: PlayingCard) {
-    return playerHand.every(card => card.rank === cardToPlace.rank)
+    return playerHand.every((card) => card.rank === cardToPlace.rank)
   }
 
-  async #selectFromTable(tableCards: PlayingCard[], cardToPlay: PlayingCard) {
+  async #selectFromTable(player: Player, cardToPlay: PlayingCard) {
     let cards = [cardToPlay]
-    // const tableCards = player.getTableCards()
+    const tableCards = player.getTableCards()
 
-    const cardsToPlay = await this.#selectMultipleCards(tableCards, cardToPlay)
+    let amountOfCards = 0
+    let cardsToPlay = []
+
+    const seccondLayer = tableCards[1]
+
+    for (const card of seccondLayer) {
+      if (card !== null && card.rank === cardToPlay.rank) {
+        amountOfCards++
+      }
+    }
+
+    if (amountOfCards >= 1) {
+      const respone = await this.#view.askAllCardsOfSameRank()
+
+      if (respone) {
+        cardsToPlay = this.#findAllMatchedCards(seccondLayer, cardToPlay)
+      } else {
+        cardsToPlay = [cardToPlay]
+      }
+    } else {
+      cardsToPlay = [cardToPlay]
+    }
 
     for (const card of cardsToPlay) {
       cards.push(card)
@@ -161,7 +191,9 @@ class GameController {
   }
 
   #findAllMatchedCards(array: PlayingCard[], cardToPlay: PlayingCard) {
-    return array.filter((card) => card.rank === cardToPlay.rank)
+    return array.filter(
+      (card) => card !== null && card.rank === cardToPlay.rank
+    )
   }
 }
 

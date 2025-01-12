@@ -92,12 +92,15 @@ class Player implements CardObserver {
   }
 
   playCard(card: PlayingCard) {
-    if (this.#hand.length === 0) {
-      this.#removeFromTable(card)
+    if (this.#hand.includes(card)) {
+      this.#removeFromHand(card);
+    } else if (this.canCardBePlayed(card)) {
+      this.#removeFromTable(card);
     } else {
-      this.#removeFromHand(card)
+      throw new Error(`Card ${card.rank} ${card.suit} cannot be played.`);
     }
   }
+  
 
   /**
    * Will remove a card from the hand.
@@ -109,7 +112,7 @@ class Player implements CardObserver {
 
     this.#hand = this.#hand.filter((card) => {
       const isMatch = card.rank === cardToRemove.rank && card.suit === cardToRemove.suit
-      
+
       if (isMatch) {
         cardFound = true // Mark as found
       }
@@ -121,6 +124,8 @@ class Player implements CardObserver {
     }
 
     this.#isHandEmpty()
+
+    return cardFound
   }
 
   #isHandEmpty() {
@@ -149,6 +154,8 @@ class Player implements CardObserver {
         this.#tableCardsAvailble[layerToChange][i] = status
       }
     }
+
+    console.log(this.#tableCardsAvailble)
   }
 
   /**
@@ -245,6 +252,36 @@ class Player implements CardObserver {
     if (this.#tableCards[index].every((card) => card === null)) {
       this.#changeAvailability(true)
     }
+  }
+
+  canCardBePlayed(cardToBePlayed: PlayingCard): boolean {
+    // Kontrollera om kortet finns i handen
+    if (this.#hand.includes(cardToBePlayed)) {
+      return true;
+    }
+
+    // Kontrollera om kortet finns i bordskorten och är tillgängligt
+    for (let row = 0; row < this.#tableCards.length; row++) {
+      for (let col = 0; col < this.#tableCards[row].length; col++) {
+        if (this.#tableCards[row][col] === cardToBePlayed && this.#tableCardsAvailble[row][col]) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  #handIsEmpty() {
+    return this.#hand.length === 0
+  }
+
+  #searchCard(array: PlayingCard[], cardToBePlayed: PlayingCard) {
+    // return true if a matching card is found
+    return array.some(
+      (card) =>
+        card?.rank === cardToBePlayed.rank && card?.suit === cardToBePlayed.suit
+    )
   }
 }
 

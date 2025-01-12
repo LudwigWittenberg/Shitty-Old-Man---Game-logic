@@ -89,6 +89,18 @@ describe('Game under test', () => {
       })
     })
 
+    describe('Validate that the deck have the correct amount of cards left', () => {
+      test('cardsLeftInDeck should return the correct number of cards left in the deck', () => {
+        const initialCardsLeft = sut.cardsLeftInDeck()
+        expect(initialCardsLeft).toBe(52) // Assuming a standard deck of 52 cards
+
+        // Draw a card from the deck
+        sut.chanceFromDeck(sut.getCurrentPlayer())
+        const cardsLeftAfterDraw = sut.cardsLeftInDeck()
+        expect(cardsLeftAfterDraw).toBe(initialCardsLeft - 1)
+      })
+    })
+
     describe('Play rounds', () => {
       test('Player one makes a valid move', () => {
         const p = sut.getCurrentPlayer()
@@ -237,7 +249,11 @@ describe('Game under test', () => {
       test('A player can chance from the deck if he wants to.', () => {
         const player = sut.getCurrentPlayer()
 
-        const actualMove = sut.chanceFromDeck(player)
+        const card = sut.chanceFromDeck(player)
+
+        const cardsToPlay = [card]
+
+        const actualMove = sut.playRound(player, cardsToPlay)
 
         expect([
           MOVE.NOT_VALID,

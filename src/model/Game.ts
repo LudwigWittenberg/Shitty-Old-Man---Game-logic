@@ -1,5 +1,5 @@
-import { GameView } from '../view/GameView.js'
 import { Deck } from './Deck.js'
+import { HIDDEN } from './enums/playingcard/HIDDEN.js'
 import { MOVE } from './enums/Rules/MOVE.js'
 import { ListenNewCard } from './Observers/ListenNewCard.js'
 import { Player } from './Player.js'
@@ -85,6 +85,7 @@ class Game {
   }
 
   #resetActivePile() {
+    console.log('jag resettas')
     for (const card of this.#activePile) {
       this.#discardPile.push(card)
     }
@@ -94,15 +95,30 @@ class Game {
 
   #validPlayerMove(player: Player, cardToPlay: PlayingCard[]) {
     for (const card of cardToPlay) {
-      player.playCard(card)
-      this.#activePile.push(card)
+      if (card.rank === HIDDEN.HIDDEN) [
+        console.log('HODDEN')
+      ]
+      if (!player.canCardBePlayed(card)) {
+        console.log(`Card ${card.rank} ${card.suit} cannot be played.`)
+        
+      } else {
+        console.log('CARD HAVE BEEN PLACED')
+        player.playCard(card)
 
-      if (this.#isHandFull(player)) {
-        if (!this.#isDeckEmpty()) {
-          const cardFromDeck = this.#deck.dealCard()
-          cardFromDeck.show(true)
-          player.addToHand(cardFromDeck)
+        
+        console.log(this.#activePile[this.#activePile.length - 1])
+        this.#activePile.push(card)
+        console.log(this.#activePile[this.#activePile.length - 1])
+
+        if (this.#isHandFull(player)) {
+          if (!this.#isDeckEmpty()) {
+            const cardFromDeck = this.#deck.dealCard()
+            cardFromDeck.show(true)
+            // player.addToHand(cardFromDeck)
+          }
         }
+
+        // this.#activePile = [...new Set(this.#activePile)]
       }
     }
   }
@@ -224,31 +240,19 @@ class Game {
    * @returns {MOVE} - The validity of the move.
    */
   chanceFromDeck(player: Player) {
-    // I think I need to change this way so that the player can place multiple cards if he have more of the same rank.
-    const cardsToPlay = []
-
     const chanceCard = this.#deck.dealCard()
     chanceCard.show(true)
     player.addToHand(chanceCard)
-    cardsToPlay.push(chanceCard)
 
-    return this.playRound(player, cardsToPlay)
+    return chanceCard
   }
 
-  cardsLeftInDeck():number {
+  cardsLeftInDeck(): number {
     return this.#deck.cardsLeft
   }
 
   #restartGame() {
-    for (const card of this.#activePile) {
-      this.#discardPile.push(card)
-    }
-
-    for (const card of this.#discardPile) {
-      this.#deck.add(card)
-    }
-
-    this.#deck.shuffle()
+    this.#initializeDeck()
   }
 }
 
