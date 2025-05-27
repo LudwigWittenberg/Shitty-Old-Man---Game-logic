@@ -6,7 +6,7 @@ import { stdin as input, stdout as output } from 'node:process'
  * Will let the users enter a value to the application.
  */
 class ReadLineAdapter {
-  #rl
+  #rl: any
   
   constructor() {
     this.#createInterface()

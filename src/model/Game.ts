@@ -85,7 +85,6 @@ class Game {
   }
 
   #resetActivePile() {
-    console.log('jag resettas')
     for (const card of this.#activePile) {
       this.#discardPile.push(card)
     }
@@ -95,20 +94,14 @@ class Game {
 
   #validPlayerMove(player: Player, cardToPlay: PlayingCard[]) {
     for (const card of cardToPlay) {
-      if (card.rank === HIDDEN.HIDDEN) [
-        console.log('HODDEN')
-      ]
       if (!player.canCardBePlayed(card)) {
         console.log(`Card ${card.rank} ${card.suit} cannot be played.`)
         
       } else {
-        console.log('CARD HAVE BEEN PLACED')
+        card.show(true)
         player.playCard(card)
 
-        
-        console.log(this.#activePile[this.#activePile.length - 1])
         this.#activePile.push(card)
-        console.log(this.#activePile[this.#activePile.length - 1])
 
         if (this.#isHandFull(player)) {
           if (!this.#isDeckEmpty()) {
@@ -117,8 +110,6 @@ class Game {
             // player.addToHand(cardFromDeck)
           }
         }
-
-        // this.#activePile = [...new Set(this.#activePile)]
       }
     }
   }

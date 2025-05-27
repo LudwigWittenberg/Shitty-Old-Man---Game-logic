@@ -1,5 +1,6 @@
 export enum MENU {
-  ADD_PLAYER,
-  START,
-  EXIT
+  GAMERULES = 'GAMERULES',
+  ADD_PLAYER = 'ADD_PLAYER',
+  START = 'START',
+  EXIT = 'EXIT'
 }

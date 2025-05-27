@@ -6,7 +6,8 @@
     "sourceMap": true,
     "outDir": "dist",
     "allowImportingTsExtensions": false,
-    "noEmit": false
+    "noEmit": false,
+    "strict": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],

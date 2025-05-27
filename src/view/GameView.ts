@@ -1,17 +1,13 @@
-import { Player } from "../model/Player.js"
+import { MENU } from "../enums/MENU.js"
 
 interface GameView {
   addPlayer(): Promise<String>
 
-  exitGame()
+  exitGame() : void
 
-  chooseCardToPlay(player: Player, cards, activeCard, cardsLeft: number)
+  mainMenu(): Promise<MENU>
 
-  showWinner(player: Player)
-
-  menu()
-
-  askAllCardsOfSameRank()
+  showGameRules() : void
 }
 
 export { GameView }

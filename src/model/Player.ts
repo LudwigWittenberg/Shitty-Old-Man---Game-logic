@@ -154,8 +154,6 @@ class Player implements CardObserver {
         this.#tableCardsAvailble[layerToChange][i] = status
       }
     }
-
-    console.log(this.#tableCardsAvailble)
   }
 
   /**
@@ -255,33 +253,46 @@ class Player implements CardObserver {
   }
 
   canCardBePlayed(cardToBePlayed: PlayingCard): boolean {
-    // Kontrollera om kortet finns i handen
-    if (this.#hand.includes(cardToBePlayed)) {
-      return true;
+    if (this.#hand.length > 0) {
+      return true
     }
 
-    // Kontrollera om kortet finns i bordskorten och är tillgängligt
+    let LAYER = 0
+    let position = 0
+    // find first card and get the index om that
     for (let row = 0; row < this.#tableCards.length; row++) {
-      for (let col = 0; col < this.#tableCards[row].length; col++) {
-        if (this.#tableCards[row][col] === cardToBePlayed && this.#tableCardsAvailble[row][col]) {
-          return true;
+      for (let i = 0; i < this.#tableCards[row].length; i++) {
+        const card = this.#tableCards[row][i]
+
+        if (card !== null && card.rank === cardToBePlayed.rank && card.suit === cardToBePlayed.suit) {
+          LAYER = row
+          position = i
+          break
         }
       }
     }
 
-    return false;
-  }
+    const availbe = this.#tableCardsAvailble[LAYER][position]
 
-  #handIsEmpty() {
-    return this.#hand.length === 0
-  }
+    console.log('AVAILBE ', availbe)
 
-  #searchCard(array: PlayingCard[], cardToBePlayed: PlayingCard) {
-    // return true if a matching card is found
-    return array.some(
-      (card) =>
-        card?.rank === cardToBePlayed.rank && card?.suit === cardToBePlayed.suit
-    )
+    return availbe
+    
+    // // Kontrollera om kortet finns i handen
+    // if (this.#hand.includes(cardToBePlayed)) {
+    //   return true;
+    // }
+
+    // // Kontrollera om kortet finns i bordskorten och är tillgängligt
+    // for (let row = 0; row < this.#tableCards.length; row++) {
+    //   for (let col = 0; col < this.#tableCards[row].length; col++) {
+    //     if (this.#tableCards[row][col] === cardToBePlayed && this.#tableCardsAvailble[row][col]) {
+    //       return true;
+    //     }
+    //   }
+    // }
+
+    // return false;
   }
 }
 

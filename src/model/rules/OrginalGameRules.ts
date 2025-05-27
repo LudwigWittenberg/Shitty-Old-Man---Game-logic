@@ -19,7 +19,7 @@ class OrginalGameRules implements Rules {
     cardsToPlay: PlayingCard[],
     player: Player
   ): MOVE {
-    this.#changeAllToVisible(cardsToPlay)
+    // this.#changeAllToVisible(cardsToPlay)
 
     // Look if the last card of the player is a not valid move.
     if (this.#isLastCard(player, cardsToPlay)) {
