@@ -5,8 +5,6 @@ import { Player } from '../model/Player.js'
 import { PlayingCard } from '../model/PlayingCard.js'
 import { GameView } from '../view/GameView.js'
 
-// HAMPUS WAS HERE
-
 class GameController {
   #game: Game
   #view: GameView
